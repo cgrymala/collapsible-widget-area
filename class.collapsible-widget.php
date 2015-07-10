@@ -1,6 +1,7 @@
 <?php
 /**
  * Define the class for the actual Collapsible widget
+ * @version 0.5
  */
 class collapsible_widget extends WP_Widget {
 	/**
@@ -15,15 +16,16 @@ class collapsible_widget extends WP_Widget {
 	function __construct() {
 		/**
 		 * Attempt to determine which version of jQueryUI is being used
+		 * v4.2 uses jQueryUI v1.11.4
+		 * v4.1 uses jQueryUI v1.11.2
+		 * v4.0 uses jQueryUI v1.10.4
 		 * v3.5 uses jQueryUI v1.9.x
 		 * v3.1-3.4.2 uses jQueryUI 1.8.x
 		 * v2.8-3.0 uses jQueryUI 1.7.x
 		 */
 		global $wp_version;
-		if ( version_compare( $wp_version, '3.1', '<' ) ) {
-			$uivers = 1.7;
-		} elseif ( version_compare( $wp_version, '3.4.100', '<' ) ) {
-			$uivers = 1.8;
+		if ( version_compare( $wp_version, '4.1', '<' ) ) {
+			$uivers = '1.10';
 		} else {
 			$uivers = '1.11';
 		}
