@@ -1,8 +1,17 @@
 <?php
 /**
  * Define the collapsible_widget_area class
+ * This class creates and sets up a new widgetized area
+ * 		that is designed to allow users to drag widgets 
+ * 		in. Those widgets will then be combined into a 
+ * 		single, collapsible widget that is set up through 
+ * 		the collapsible_widget class
+ *
+ * @package collapsible-widget-area
+ * @version 0.5.2.1
  */
 class collapsible_widget_area {
+	var $version = '0.5.2.1';
 	var $args = array();
 	var $sidebar_id = null;
 	var $is_multinetwork = false;
@@ -75,12 +84,14 @@ class collapsible_widget_area {
 			$this->sidebar_args[$i] = $args;
 		}
 		
-		if ( is_admin() ) {
-			wp_register_script( 'collapsible-widgets-admin', plugins_url( 'scripts/collapsible-widgets-admin.js', __FILE__ ), array( 'jquery' ), '0.4.0a', true );
-		}
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		
 		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
 		add_shortcode( 'collapsible-widget', array( $this, 'do_shortcode' ) );
+	}
+	
+	function admin_enqueue_scripts() {
+		wp_register_script( 'collapsible-widgets-admin', plugins_url( 'scripts/collapsible-widgets-admin.js', __FILE__ ), array( 'jquery', 'admin-widgets' ), $this->version, true );
 	}
 	
 	function do_shortcode( $atts ) {

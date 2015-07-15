@@ -1,7 +1,10 @@
 <?php
 /**
  * Define the class for the actual Collapsible widget
- * @version 0.5.2
+ * This class sets up most of the options and features of the 
+ * 		Collapsible Widget Area plugin. 
+ * @package collapsible-widget-area
+ * @version 0.5.2.1
  */
 class collapsible_widget extends WP_Widget {
 	/**
@@ -14,9 +17,10 @@ class collapsible_widget extends WP_Widget {
 	 * Construct our widget item
 	 */
 	function __construct() {
-		$this->version = '0.5.1';
+		$this->version = '0.5.2.1';
 		
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 11 );
 		
 		$widget_ops = array( 
 			'classname'   => 'collapsible-widget', 
@@ -73,26 +77,22 @@ class collapsible_widget extends WP_Widget {
 		wp_register_script( 'collapsible-widgets', plugins_url( 'scripts/collapsible-widgets.js', __FILE__ ), array( 'jquery-cookie', 'jquery-ui-accordion' ), $this->version, true );
 		
 		if ( version_compare( $GLOBALS['wp_version'], '3.3', '<' ) ) {
-			/*print( "\n<!-- This is a version lower than 3.3 -->\n" );*/
-			/*wp_register_script( 'jquery-ui', includes_url( 'js/jquery/ui.core.js' ), array( 'jquery' ), '1.8.12', true );*/
-			/*wp_register_script( 'jquery-ui-accordion', plugins_url( 'scripts/jquery.ui.accordion.min.js', __FILE__ ), array( 'jquery-ui', 'jquery-ui-widget' ), '1.8.16', true );*/
-			/*wp_register_script( 'jquery-ui-tabs', includes_url( 'js/jquery/ui.tabs.js' ), array( 'jquery-ui' ), '1.8.16', true );*/
-			/*wp_enqueue_script( 'jquery-ui-accordion' );*/
 			wp_enqueue_script( 'jquery-ui-tabs' );
 			wp_enqueue_script( 'collapsible-widgets' );
 			
 			wp_enqueue_style( 'collapsible-widgets' );
 		} else {
-			/*print( "\n<!-- Number of sidebars: {$options['sidebars']} -->\n" );
-			print( "\n<!-- Sidebar IDs:\n" );
-			var_dump( $collapsible_widget_area->sidebar_id );
-			print( "\n-->\n" );*/
 			for ( $i = 1; $i <= $options['sidebars']; $i++ ) {
-				/*print( "\n<!-- Checking sidebar {$i} to see if it is active -->\n" );*/
 				if ( is_active_sidebar( $collapsible_widget_area->sidebar_id[  's-' . $i ] ) )
 					wp_enqueue_style( 'collapsible-widgets' );
 			}
 		}
+	}
+	
+	function admin_enqueue_scripts() {
+		$screen = get_current_screen();
+		if ( is_object( $screen ) && property_exists( $screen, 'id' ) && 'widgets' == $screen->id )
+			wp_enqueue_script( 'collapsible-widgets-admin' );
 	}
 	
 	function defaults() {
@@ -108,10 +108,9 @@ class collapsible_widget extends WP_Widget {
 	}
 	
 	function form( $instance ) {
-		wp_enqueue_script( 'collapsible-widgets-admin' );
-		
 		$instance = wp_parse_args( $instance, $this->defaults() );
 		$instance['title'] = sprintf( 'Area %d', (int) $instance['sidebar_id'] );
+		$instance['show_what'] = array_key_exists( 'show_what', $instance ) ? $instance['show_what'] : $instance['type'];
 		
 		if ( $instance['invalid-widget'] ) {
 ?>
@@ -203,15 +202,35 @@ class collapsible_widget extends WP_Widget {
 				);
 			}
 		}
-		$instance['show_what'] = array_key_exists( 'show_what', $new_instance ) && 'accordion' == $new_instance['show_what'] ? 'accordion' : 'tabbed';
-		$instance['collapsible'] = in_array( $new_instance['collapsible'], array( '1', 1, true ) );
-		$instance['closed'] = in_array( $new_instance['closed'], array( '1', 1, true ) );
-		$instance['cookie'] = in_array( $new_instance['cookie'], array( '1', 1, true ) );
+		if ( array_key_exists( 'show_what', $new_instance ) && 'accordion' == $new_instance['show_what'] ) {
+			$instance['show_what'] = 'accordion';
+		} else {
+			$instance['show_what'] = 'tabbed';
+		}
+		
+		if ( array_key_exists( 'collapsible', $new_instance ) && in_array( $new_instance['collapsible'], array( '1', 1, true ), true ) ) {
+			$instance['collapsible'] = true;
+		} else {
+			$instance['collapsible'] = false;
+		}
+		
+		if ( array_key_exists( 'closed', $new_instance ) && in_array( $new_instance['closed'], array( '1', 1, true ), true ) ) {
+			$instance['closed'] = true;
+		} else {
+			$instance['closed'] = false;
+		}
+		
+		if ( array_key_exists( 'cookie', $new_instance ) && in_array( $new_instance['cookie'], array( '1', 1, true ), true ) ) {
+			$instance['cookie'] = true;
+		} else {
+			$instance['cookie'] = false;
+		}
+		
 		return $instance;
 	}
 	
 	function widget( $args, $instance ) {
-		if ( stristr( $args['id'], 'collapsible-widget-area' ) )
+		if ( is_array( $args ) && array_key_exists( 'id', $args ) && stristr( $args['id'], 'collapsible-widget-area' ) )
 			return;
 		
 		if ( ! array_key_exists( 'sidebar_id', $instance ) || ! is_numeric( $instance['sidebar_id'] ) )
@@ -250,9 +269,6 @@ class collapsible_widget extends WP_Widget {
 <!-- Collapsible Widget Area Options -->
 <script type="text/javascript">var collapsible_widget_area = ' . json_encode( $this->instance ) . ';</script>
 <!-- / Collapsible Widget Area Options -->';
-		/*wp_enqueue_script( 'jquery-ui-accordion' );
-		wp_enqueue_script( 'jquery-cookie' );
-		wp_enqueue_script( 'jquery-ui-tabs' );*/
 		
 		wp_enqueue_script( 'collapsible-widgets' );
 		
