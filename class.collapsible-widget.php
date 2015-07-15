@@ -4,7 +4,7 @@
  * This class sets up most of the options and features of the 
  * 		Collapsible Widget Area plugin. 
  * @package collapsible-widget-area
- * @version 0.5.2.1
+ * @version 0.5.3
  */
 class collapsible_widget extends WP_Widget {
 	/**
@@ -17,7 +17,7 @@ class collapsible_widget extends WP_Widget {
 	 * Construct our widget item
 	 */
 	function __construct() {
-		$this->version = '0.5.2.1';
+		$this->version = '0.5.3';
 		
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 11 );
@@ -114,8 +114,8 @@ class collapsible_widget extends WP_Widget {
 		
 		if ( $instance['invalid-widget'] ) {
 ?>
-<?php _e( '<p>You attempted to set up a collapsible widget inside of a collapsible widget area. This could cause an infinite recursion resulting in a tear in the space-time continuum.</p> <p><strong>Please remove this widget from this sidebar</strong> in order to avoid destroying the entire universe. Thank you.</p>' ) ?>
-			<div class="hidden"><input type="text" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php _e( 'Error - Attention Required' ) ?>" readonly /></div>
+<?php _e( '<p>You attempted to set up a collapsible widget inside of a collapsible widget area. This could cause an infinite recursion resulting in a tear in the space-time continuum.</p> <p><strong>Please remove this widget from this sidebar</strong> in order to avoid destroying the entire universe. Thank you.</p>', 'collapsible-widget-area' ) ?>
+			<div class="hidden"><input type="text" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php _e( 'Error - Attention Required', 'collapsible-widget-area' ) ?>" readonly /></div>
 <?php
 			return;
 		}
@@ -128,11 +128,11 @@ class collapsible_widget extends WP_Widget {
 		}
 		/*$this->widgets_list();*/
 ?>
-	<p><label for="<?php echo $this->get_field_id( 'title' ) ?>"><?php _e( 'Title:' ) ?></label><br />
+	<p><label for="<?php echo $this->get_field_id( 'title' ) ?>"><?php _e( 'Title:', 'collapsible-widget-area' ) ?></label><br />
     	<input type="text" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php echo $instance['title'] ?>" readonly /><br />
-        <em><?php _e( 'The title is used only to differentiate between instances, and is automatically generated based on the collapsible widget area you choose below. It does not show up on the front-end anywhere.' ) ?></em></p>
+        <em><?php _e( 'The title is used only to differentiate between instances, and is automatically generated based on the collapsible widget area you choose below. It does not show up on the front-end anywhere.', 'collapsible-widget-area' ) ?></em></p>
     <hr />
-	<p><label for="<?php echo $this->get_field_id( 'sidebar_id' ) ?>"><?php _e( 'Which collapsible widget area should be used?' ) ?></label><br/>
+	<p><label for="<?php echo $this->get_field_id( 'sidebar_id' ) ?>"><?php _e( 'Which collapsible widget area should be used?', 'collapsible-widget-area' ) ?></label><br/>
     	<select name="<?php echo $this->get_field_name( 'sidebar_id' ) ?>" id="<?php echo $this->get_field_id( 'sidebar_id' ) ?>">
 <?php
 		for( $i=1; $i <= $collapsible_widget_area->options['sidebars']; $i++ ) {
@@ -142,12 +142,12 @@ class collapsible_widget extends WP_Widget {
 		}
 ?>
         </select></p>
-	<p><?php _e( 'Display widgets in which manner?' ) ?><br/>
-		<input type="radio" name="<?php echo $this->get_field_name( 'show_what' ) ?>" id="<?php echo $this->get_field_id( 'show_what_tabbed' ) ?>" value="tabbed"<?php checked( $instance['show_what'], 'tabbed' ) ?>/> <label for="<?php echo $this->get_field_id( 'show_what_tabbed' ) ?>"><?php _e( 'Tabs' ) ?></label><br/>
-		<input type="radio" name="<?php echo $this->get_field_name( 'show_what' ) ?>" id="<?php echo $this->get_field_id( 'show_what_accordion' ) ?>" value="accordion"<?php checked( $instance['show_what'], 'accordion' ) ?>/> <label for="<?php echo $this->get_field_id( 'show_what_accordion' ) ?>"><?php _e( 'Accordion' ) ?></label></p>
-	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'collapsible' ) ?>" id="<?php echo $this->get_field_id( 'collapsible' ) ?>" value="1"<?php checked( $instance['collapsible'] ) ?>/> <label for="<?php echo $this->get_field_id( 'collapsible' ) ?>"><?php _e( 'Allow entire accordion to be closed (if applicable)?' ) ?></label></p>
-	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'closed' ) ?>" id="<?php echo $this->get_field_id( 'closed' ) ?>" value="1"<?php checked( $instance['closed'] ) ?>/> <label for="<?php echo $this->get_field_id( 'closed' ) ?>"><?php _e( 'Start with the entire accordion collapsed (only applicable if the above option is checked)' ) ?></label></p>
-	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'cookie' ) ?>" id="<?php echo $this->get_field_id( 'cookie' ) ?>" value="1"<?php checked( $instance['cookie'] ) ?>/> <label for="<?php echo $this->get_field_id( 'cookie' ) ?>"><?php _e( 'Persist active tab across page views? (Currently only applicable to tabbed interface)' ) ?></label></p>
+	<p><?php _e( 'Display widgets in which manner?', 'collapsible-widget-area' ) ?><br/>
+		<input type="radio" name="<?php echo $this->get_field_name( 'show_what' ) ?>" id="<?php echo $this->get_field_id( 'show_what_tabbed' ) ?>" value="tabbed"<?php checked( $instance['show_what'], 'tabbed' ) ?>/> <label for="<?php echo $this->get_field_id( 'show_what_tabbed' ) ?>"><?php _e( 'Tabs', 'collapsible-widget-area' ) ?></label><br/>
+		<input type="radio" name="<?php echo $this->get_field_name( 'show_what' ) ?>" id="<?php echo $this->get_field_id( 'show_what_accordion' ) ?>" value="accordion"<?php checked( $instance['show_what'], 'accordion' ) ?>/> <label for="<?php echo $this->get_field_id( 'show_what_accordion' ) ?>"><?php _e( 'Accordion', 'collapsible-widget-area' ) ?></label></p>
+	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'collapsible' ) ?>" id="<?php echo $this->get_field_id( 'collapsible' ) ?>" value="1"<?php checked( $instance['collapsible'] ) ?>/> <label for="<?php echo $this->get_field_id( 'collapsible' ) ?>"><?php _e( 'Allow entire accordion to be closed (if applicable)?', 'collapsible-widget-area' ) ?></label></p>
+	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'closed' ) ?>" id="<?php echo $this->get_field_id( 'closed' ) ?>" value="1"<?php checked( $instance['closed'] ) ?>/> <label for="<?php echo $this->get_field_id( 'closed' ) ?>"><?php _e( 'Start with the entire accordion collapsed (only applicable if the above option is checked)', 'collapsible-widget-area' ) ?></label></p>
+	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'cookie' ) ?>" id="<?php echo $this->get_field_id( 'cookie' ) ?>" value="1"<?php checked( $instance['cookie'] ) ?>/> <label for="<?php echo $this->get_field_id( 'cookie' ) ?>"><?php _e( 'Persist active tab across page views? (Currently only applicable to tabbed interface)', 'collapsible-widget-area' ) ?></label></p>
 <?php
 	}
 	
@@ -171,7 +171,7 @@ class collapsible_widget extends WP_Widget {
 		<input type="checkbox" name="<?php echo $this->get_field_name( 'on' ) . '[' . $wid . ']' ?>" id="<?php echo $this->get_field_id( 'on_' . $wid ) ?>" value="<?php echo $wid ?>"<?php checked( array_key_exists( $wid, $instance['widgets'] ) ) ?>/> 
 		<label for="<?php echo $this->get_field_id( 'on_' . $wid ) ?>"><strong><?php echo $widget_info['name'] ?></strong> <em>(<?php echo $widget_info['id'] ?>)</em></label>
 		<br/>
-		<label for="<?php echo $this->get_field_id( 'order_' . $wid ) ?>"><?php _e( 'Order: ' ) ?></label>
+		<label for="<?php echo $this->get_field_id( 'order_' . $wid ) ?>"><?php _e( 'Order: ', 'collapsible-widget-area' ) ?></label>
 		<input type="text" name="<?php echo $this->get_field_name( 'order' ) . '[' . $wid . ']' ?>" id="<?php echo $this->get_field_id( 'order_' . $wid ) ?>" value="<?php echo array_key_exists( $wid, $instance['widgets'] ) && ! empty( $instance['widgets'][$wid]['order'] ) ? $instance['widgets'][$wid]['order'] : '' ?>"/>
 	</li>
 <?php
