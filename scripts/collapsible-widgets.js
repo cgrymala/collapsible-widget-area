@@ -31,6 +31,12 @@ jQuery( function( $ ) {
                 localStorage.setItem( 'ciwa_current_tab-' + containerId, tabIndex );
             }
 		}
+        if ( window.location.hash && document.querySelectorAll( window.location.hash ).length >=1 ) {
+            let selectedTab = $( window.location.hash );
+            if ( selectedTab.hasClass( 'collapsible-item' ) ) {
+                currentTab = selectedTab.parent().find( '.collapsible-item' ).index( selectedTab );
+            }
+        }
         cwa_opts.active = currentTab;
 
 		let $container = $( '#' + collapsible_widget_area[i].id );
