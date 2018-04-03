@@ -100,7 +100,8 @@ class collapsible_widget extends WP_Widget {
 			'invalid-widget' => false, 
 			'sidebar_id'  => 1, 
 			'title'       => sprintf( 'Area %d', 1 ), 
-			'type'        => 'tabbed', 
+			'type'        => 'tabbed',
+			'heightStyle' => 'auto',
 			'collapsible' => false, 
 			'closed'      => false, 
 			'cookie'      => false, 
@@ -109,7 +110,7 @@ class collapsible_widget extends WP_Widget {
 	
 	function form( $instance ) {
 		$instance = wp_parse_args( $instance, $this->defaults() );
-		$instance['title'] = sprintf( 'Area %d', (int) $instance['sidebar_id'] );
+		$instance['title'] = sprintf( __( 'Area %d', 'collapsible-widget-area' ), (int) $instance['sidebar_id'] );
 		$instance['show_what'] = array_key_exists( 'show_what', $instance ) ? $instance['show_what'] : $instance['type'];
 		
 		if ( $instance['invalid-widget'] ) {
@@ -126,7 +127,6 @@ class collapsible_widget extends WP_Widget {
 			_e( 'There do not appear to be any collapsible widget sidebars configured. Please update the settings for this plugin to set up at least one collapsible widget area.', 'collapsible-widget-area' );
 			return;
 		}
-		/*$this->widgets_list();*/
 ?>
 	<p><label for="<?php echo $this->get_field_id( 'title' ) ?>"><?php _e( 'Title:', 'collapsible-widget-area' ) ?></label><br />
     	<input type="text" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php echo $instance['title'] ?>" readonly /><br />
@@ -145,40 +145,19 @@ class collapsible_widget extends WP_Widget {
 	<p><?php _e( 'Display widgets in which manner?', 'collapsible-widget-area' ) ?><br/>
 		<input type="radio" name="<?php echo $this->get_field_name( 'show_what' ) ?>" id="<?php echo $this->get_field_id( 'show_what_tabbed' ) ?>" value="tabbed"<?php checked( $instance['show_what'], 'tabbed' ) ?>/> <label for="<?php echo $this->get_field_id( 'show_what_tabbed' ) ?>"><?php _e( 'Tabs', 'collapsible-widget-area' ) ?></label><br/>
 		<input type="radio" name="<?php echo $this->get_field_name( 'show_what' ) ?>" id="<?php echo $this->get_field_id( 'show_what_accordion' ) ?>" value="accordion"<?php checked( $instance['show_what'], 'accordion' ) ?>/> <label for="<?php echo $this->get_field_id( 'show_what_accordion' ) ?>"><?php _e( 'Accordion', 'collapsible-widget-area' ) ?></label></p>
-	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'collapsible' ) ?>" id="<?php echo $this->get_field_id( 'collapsible' ) ?>" value="1"<?php checked( $instance['collapsible'] ) ?>/> <label for="<?php echo $this->get_field_id( 'collapsible' ) ?>"><?php _e( 'Allow entire accordion to be closed (if applicable)?', 'collapsible-widget-area' ) ?></label></p>
-	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'closed' ) ?>" id="<?php echo $this->get_field_id( 'closed' ) ?>" value="1"<?php checked( $instance['closed'] ) ?>/> <label for="<?php echo $this->get_field_id( 'closed' ) ?>"><?php _e( 'Start with the entire accordion collapsed (only applicable if the above option is checked)', 'collapsible-widget-area' ) ?></label></p>
-	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'cookie' ) ?>" id="<?php echo $this->get_field_id( 'cookie' ) ?>" value="1"<?php checked( $instance['cookie'] ) ?>/> <label for="<?php echo $this->get_field_id( 'cookie' ) ?>"><?php _e( 'Persist active tab across page views? (Currently only applicable to tabbed interface)', 'collapsible-widget-area' ) ?></label></p>
+    <p>
+        <?php _e( 'How should the panel heights be handled?', 'collapsible-widget-area' ) ?><br/>
+        <input type="radio" name="<?php echo $this->get_field_name( 'heightStyle' ) ?>" id="<?php echo $this->get_field_id( 'heightStyle_auto' ) ?>" value="auto"<?php checked( $instance['heightStyle'], 'auto' ) ?>/>
+        <label for="<?php echo $this->get_field_id( 'heightStyle_auto' ) ?>"><?php _e( 'All panels equal to tallest panel', 'collapsible-widget-area' ) ?></label><br/>
+        <input type="radio" name="<?php echo $this->get_field_name( 'heightStyle' ) ?>" id="<?php echo $this->get_field_id( 'heightStyle_fill' ) ?>" value="fill"<?php checked( $instance['heightStyle'], 'fill' ) ?>/>
+        <label for="<?php echo $this->get_field_id( 'heightStyle_fill' ) ?>"><?php _e( 'All panels are the same height as the initially active panel (this does not work well with fully-collapsible areas)', 'collapsible-widget-area' ) ?></label><br/>
+        <input type="radio" name="<?php echo $this->get_field_name( 'heightStyle' ) ?>" id="<?php echo $this->get_field_id( 'heightStyle_content' ) ?>" value="content"<?php checked( $instance['heightStyle'], 'content' ) ?>/>
+        <label for="<?php echo $this->get_field_id( 'heightStyle_content' ) ?>"><?php _e( 'Each panel limited to height of its own content', 'collapsible-widget-area' ) ?></label>
+    </p>
+	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'collapsible' ) ?>" id="<?php echo $this->get_field_id( 'collapsible' ) ?>" value="1"<?php checked( $instance['collapsible'] ) ?>/> <label for="<?php echo $this->get_field_id( 'collapsible' ) ?>"><?php _e( 'Allow all panels to be closed at once?', 'collapsible-widget-area' ) ?></label></p>
+	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'closed' ) ?>" id="<?php echo $this->get_field_id( 'closed' ) ?>" value="1"<?php checked( $instance['closed'] ) ?>/> <label for="<?php echo $this->get_field_id( 'closed' ) ?>"><?php _e( 'Start with all panels closed? (only applicable if the above option is checked)', 'collapsible-widget-area' ) ?></label></p>
+	<p><input type="checkbox" name="<?php echo $this->get_field_name( 'cookie' ) ?>" id="<?php echo $this->get_field_id( 'cookie' ) ?>" value="1"<?php checked( $instance['cookie'] ) ?>/> <label for="<?php echo $this->get_field_id( 'cookie' ) ?>"><?php _e( 'Persist active panel across page views?', 'collapsible-widget-area' ) ?></label></p>
 <?php
-	}
-	
-	function widgets_list() {
-		
-		echo '<ul class="collapsible-widget-options">';
-		
-		$widgets = $widgets[$collapsible_widget_area->sidebar_id];
-		foreach ( $widgets as $wid ) {
-			if ( ! array_key_exists( $wid, $wp_registered_widgets ) )
-				continue;
-			$widget_info = $wp_registered_widgets[$wid];
-			if ( 'collapsible-widget' == $widget_info['classname'] )
-				continue;
-			
-			/*print( "\n<!--\n" );
-			var_dump( $widget_info );
-			print( "\n-->\n" );*/
-?>
-	<li class="collapsible-widget-option">
-		<input type="checkbox" name="<?php echo $this->get_field_name( 'on' ) . '[' . $wid . ']' ?>" id="<?php echo $this->get_field_id( 'on_' . $wid ) ?>" value="<?php echo $wid ?>"<?php checked( array_key_exists( $wid, $instance['widgets'] ) ) ?>/> 
-		<label for="<?php echo $this->get_field_id( 'on_' . $wid ) ?>"><strong><?php echo $widget_info['name'] ?></strong> <em>(<?php echo $widget_info['id'] ?>)</em></label>
-		<br/>
-		<label for="<?php echo $this->get_field_id( 'order_' . $wid ) ?>"><?php _e( 'Order: ', 'collapsible-widget-area' ) ?></label>
-		<input type="text" name="<?php echo $this->get_field_name( 'order' ) . '[' . $wid . ']' ?>" id="<?php echo $this->get_field_id( 'order_' . $wid ) ?>" value="<?php echo array_key_exists( $wid, $instance['widgets'] ) && ! empty( $instance['widgets'][$wid]['order'] ) ? $instance['widgets'][$wid]['order'] : '' ?>"/>
-	</li>
-<?php
-		}
-		
-		echo '</ul>';
-		
 	}
 	
 	function update( $new_instance, $old_instance ) {
@@ -207,6 +186,18 @@ class collapsible_widget extends WP_Widget {
 		} else {
 			$instance['show_what'] = 'tabbed';
 		}
+
+		if ( array_key_exists( 'heightStyle', $new_instance ) ) {
+		    switch( $new_instance['heightStyle'] ) {
+                case 'fill' :
+                case 'content' :
+                    $instance['heightStyle'] = $new_instance['heightStyle'];
+                    break;
+                default :
+                    $instance['heightStyle'] = 'auto';
+                    break;
+            }
+        }
 		
 		if ( array_key_exists( 'collapsible', $new_instance ) && in_array( $new_instance['collapsible'], array( '1', 1, true ), true ) ) {
 			$instance['collapsible'] = true;
@@ -243,10 +234,11 @@ class collapsible_widget extends WP_Widget {
 			return;
 		
 		add_action( 'wp_print_footer_scripts', array( $this, 'print_footer_scripts' ), 1 );
-		$id = 'collapsible-widget-container-' . uniqid();
+		$id = 'cwa-' . $args['widget_id'];
 		$this->instance[] = array(
 			'id'          => $id, 
-			'type'        => 'accordion' == $instance['show_what'] ? 'accordion' : 'tabbed', 
+			'type'        => 'accordion' == $instance['show_what'] ? 'accordion' : 'tabbed',
+			'heightStyle' => in_array( $instance['heightStyle'], array( 'fill', 'content' ) ) ? $instance['heightStyle'] : 'auto',
 			'collapsible' => $this->is_true( $instance['collapsible'] ), 
 			'closed'      => $this->is_true( $instance['closed'] ), 
 			'cookie'      => $this->is_true( $instance['cookie'] ), 

@@ -3,47 +3,64 @@ jQuery( function( $ ) {
 		collapsible_widget_area = { '1' : { 'type' : 'tabbed' } };
 	}
 	
-	for ( var i in collapsible_widget_area ) {
+	for ( let i in collapsible_widget_area ) {
+
+		let cwa_opts = {
+			'collapsible' : collapsible_widget_area[i].collapsible,
+			'heightStyle' : collapsible_widget_area[i].heightStyle
+		};
+        let defaultIndex = collapsible_widget_area[i].closed ? false : 0;
+        let currentTab = defaultIndex;
+		if ( typeof( collapsible_widget_area[i].cookie ) !== 'undefined' && collapsible_widget_area[i].cookie ) {
+			currentTab = localStorage.getItem( 'ciwa_current_tab-' + collapsible_widget_area[i].id );
+
+			if ( null === currentTab ) {
+				currentTab = defaultIndex;
+			} else {
+				currentTab = ( currentTab * 1 );
+			}
+
+            cwa_opts.activate = function (event, ui) {
+                let containerId = $(event.target).attr('id');
+                let tabIndex = $( ui.newPanel[0] ).parent().find( '.collapsible-item' ).index( ui.newPanel[0] );
+                if ( $(this).hasClass( 'ui-tabs' ) ) {
+                	tabIndex = $(this).tabs('option','active');
+				} else {
+                	tabIndex = $(this).accordion('option','active');
+				}
+                localStorage.setItem( 'ciwa_current_tab-' + containerId, tabIndex );
+            }
+		}
+        cwa_opts.active = currentTab;
+
+		let $container = $( '#' + collapsible_widget_area[i].id );
 		
-		if ( collapsible_widget_area[i].type == 'accordion' ) {
-			$( '#' + collapsible_widget_area[i].id + ' .collapsible-item .widgettitle' ).each( function() {
+		if ( collapsible_widget_area[i].type === 'accordion' ) {
+			$container.find( '.collapsible-item .widgettitle' ).each( function() {
 				$( this ).html( $( this ).text() );
 				$( this ).wrapInner( '<a href="#' + $( this ).closest( '.collapsible-item' ).attr( 'id' ) + '"/>' );
 				$( this ).insertBefore( $( this ).closest( '.collapsible-item' ) );
 			} );
-			$( '#' + collapsible_widget_area[i].id + ' .widgettitle' ).first().addClass( 'first-tab' );
-			$( '#' + collapsible_widget_area[i].id + ' .widgettitle' ).last().addClass( 'last-tab' );
-			
-			var ciwa_accordion_opts = {};
-			ciwa_accordion_opts.collapsible = collapsible_widget_area[i].collapsible;
-			ciwa_accordion_opts.active = collapsible_widget_area[i].closed ? false : 0;
-			
-			/*console.log( 'Preparing to turn #collapsible-widget-container-' + i + ' into an accordion' );
-			console.log( ciwa_accordion_opts );*/
-			
-			$( '#' + collapsible_widget_area[i].id ).accordion( ciwa_accordion_opts );
+			$container.find( '.widgettitle' ).first().addClass( 'first-tab' );
+			$container.find( '.widgettitle' ).last().addClass( 'last-tab' );
+
+			console.log( cwa_opts );
+
+			$container.accordion( cwa_opts );
 		} else {
-			var collapsibleIDs = 0;
-			$( '#' + collapsible_widget_area[i].id ).prepend( '<ul class="tab-nav"/>' );
-			$( '#' + collapsible_widget_area[i].id + ' .collapsible-item .widgettitle' ).each( function() {
+			$container.prepend( '<ul class="tab-nav"/>' );
+			$container.find( '.collapsible-item .widgettitle' ).each( function() {
 				$( this ).wrapInner( '<a href="#' + $( this ).closest( '.collapsible-item' ).attr( 'id' ) + '"/>' );
 				$( this ).wrap( '<li/>' );
-				var currentItem = $( this ).find( 'a' );
+
+				let currentItem = $( this ).find( 'a' );
 				$( currentItem ).unwrap();
 				$( currentItem ).closest( 'li' ).appendTo( $( currentItem ).closest( '.collapsible-widget-container' ).find( '.tab-nav' ) );
 			} );
-			$( '#' + collapsible_widget_area[i].id + ' .tab-nav li' ).first().addClass( 'first-tab' );
-			$( '#' + collapsible_widget_area[i].id + ' .tab-nav li' ).last().addClass( 'last-tab' );
+			$container.find( '.tab-nav li' ).first().addClass( 'first-tab' );
+			$container.find( '.tab-nav li' ).last().addClass( 'last-tab' );
 			
-			var ciwa_tab_opts = {};
-			if ( collapsible_widget_area[i].cookie ) {
-				ciwa_tab_opts.cookie = true;
-			}
-			
-			/*console.log( 'Preparing to turn #collapsible-widget-container-' + i + ' into a tabbed interface' );
-			console.log( ciwa_tab_opts );*/
-			
-			$( '#' + collapsible_widget_area[i].id ).tabs( ciwa_tab_opts );
+			$container.tabs( cwa_opts );
 		}
 	}
 } );

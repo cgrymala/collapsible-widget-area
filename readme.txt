@@ -3,8 +3,8 @@ Contributors: cgrymala
 Donate link: http://giving.umw.edu/
 Tags: tab, accordion, widget, jquery, tabbed
 Requires at least: 4.0
-Tested up to: 4.3
-Stable tag: 0.5.3
+Tested up to: 4.9.4
+Stable tag: 1.0
 
 Creates a tabbed or accordion-style widget that can hold other widgets.
 
@@ -59,6 +59,10 @@ If that doesn't work, or if you prefer to install it manually, you have two opti
 If you would like to **force** this plugin to be active (generally only useful for Multi Site installations) without an option to deactivate it, you can upload the contents of the collapsible-widget-area folder to your /wp-content/mu-plugins folder. If that folder does not exist, you can safely create it.
 
 == Frequently Asked Questions ==
+
+= Why am I seeing widget content used as the title/handle for the accordion/tab? =
+
+In order to render accordions and tabs, this plugin needs to set the Widget Title as the accordion/tab handle, and the Widget Content as the content of the item. If your widget doesn't have a Widget Title for some reason, the formatting can get messed up, and can actually cause the content of one widget to be set as the title/handle, while using the title of the next widget as the content of that accordion/tab.
 
 = Will this plugin work in versions of WordPress older than 3.3? =
 
@@ -124,6 +128,14 @@ Yes, you can see some [very basic code examples of how these filters can be used
 
 == Changelog ==
 
+= 1.0 =
+* Update WordPress version compatibility
+* Fix bug in persistent active tab functionality
+* Add feature that allows tabbed items to be totally collapsed
+* Add feature that allows the active accordion item to be persistent across pages
+* Add option to choose the [heightStyle](http://api.jqueryui.com/tabs/#option-heightStyle) of Tabbed and Accordion widget areas
+* Make widget IDs more consistent
+
 = 0.5.3 =
 * Fixes bug with [wp_register_script location](https://wordpress.org/support/topic/register_sidebar-complaint-with-collapsible-widget-area?replies=7#post-7181713) h/t NinjaDoll_
 * Fixes bug with [undefined index on Widgets screen](https://wordpress.org/support/topic/register_sidebar-complaint-with-collapsible-widget-area?replies=7#post-7181886) h/t NinjaDoll_
@@ -164,7 +176,11 @@ This is the first version of this plugin
 
 == Upgrade Notice ==
 
-= 0.5.3 -
+= 1.0 =
+
+* New features and bug-fixes
+
+= 0.5.3 =
 
 * Fixes potential warning about wp_register_script
 * Fixes potential warning about undefined index

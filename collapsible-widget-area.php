@@ -3,10 +3,12 @@
 Plugin Name: Collapsible Widgets
 Plugin URI: http://plugins.ten-321.com/collapsible-widget-area/
 Description: Allows you to set up a tabbed or accordion-style widget area to be displayed wherever you choose within WordPress
-Version: 0.5.3
+Version: 1.0
 Author: cgrymala
 Author URI: http://ten-321.com/
 License: GPL2
+Text Domain: collapsible-widget-area
+Domain Path: /lang
 */
 if ( ! class_exists( 'collapsible_widget_area' ) ) {
 	require_once( 'class.collapsible-widget-area.php' );

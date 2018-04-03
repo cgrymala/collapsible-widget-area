@@ -40,6 +40,7 @@ class collapsible_widget_area {
 	 * @uses collapsible_widget_area::add_settings_fields() to add the appropriate settings fields
 	 */
 	function __construct() {
+	    add_action( 'init', array( $this, 'load_textdomain' ) );
 		$this->plugin_file = trailingslashit( basename( dirname( __FILE__ ) ) ) . str_replace( 'class.', '', basename( __FILE__ ) );
 		$this->get_args();
 		$this->_get_options();
@@ -89,6 +90,10 @@ class collapsible_widget_area {
 		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
 		add_shortcode( 'collapsible-widget', array( $this, 'do_shortcode' ) );
 	}
+
+	function load_textdomain() {
+	    load_plugin_textdomain( 'collapsible-widget-area', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+    }
 	
 	function admin_enqueue_scripts() {
 		wp_register_script( 'collapsible-widgets-admin', plugins_url( 'scripts/collapsible-widgets-admin.js', __FILE__ ), array( 'jquery', 'admin-widgets' ), $this->version, true );
