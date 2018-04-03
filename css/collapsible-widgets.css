@@ -2,5 +2,5 @@
 /* CSS Document */
 
 li.collapsible-item:after {
-	content: '(Collapsible)';
+    content: '(Collapsible)';
 }
